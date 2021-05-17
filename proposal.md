@@ -9,6 +9,8 @@ Requirements for the weekend
 
 `3` Wireframe for your app - (Lucidchart)
 
+![wireFrame](./WireFrame.JPG)
+
 
 `4` An ERD with two models (minimum) > User + 1 Resource (one to many) - (Lucidchart)
 
