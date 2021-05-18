@@ -1,0 +1,22 @@
+
+<h1>THE SEARCH RESULTS</h1>
+
+<% bookData.forEach ( book => { %>
+
+    <div class="bookReturn">
+        <div>
+            <img src="<%= book.imageLinks.thumbnail %>" alt="<%= book.title %>" style="height: 100px; width: auto;">
+            <h4><%=book.title%> released <%= book.publishedDate %> <a href="/show/<%= book.publishedDate %>">Read More</a></h4>
+            <p><%=book.authors%></p>
+            <p><%=book.publishedDate%></p>
+            <p><%=book.publisher%></p>
+            <p><%=book.ratingsCount%></p>
+            <p><%=book.description%></p>
+            <p><%=book.averageRating%></p>
+
+            <br>
+        </div>
+    </div>
+<% }) %>
+
+

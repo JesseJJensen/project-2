@@ -1,0 +1,25 @@
+<ul>
+    <li>
+        <h3><%= book.title %></h3>
+        <p><%= movie.Year %></p>
+        <img src="<%= book.imageLinks.thumbnail %>" alt="<%= book.title %>" style="height: 300px; width: auto;">
+    </li>
+    <li>Rating: <%= movie.Rated %></li>
+    <li>Released: <%= movie.Released %></li>
+    <li>Run-time: <%= movie.Runtime %></li>
+    <li>Genre: <%= movie.Genre %></li>
+    <li>Director: <%= movie.Director %></li>
+    <li>Writers: <%= movie.Writer %></li>
+    <li>Actors: <%= movie.Actors %></li>
+    <li>Metascore: <%= movie.Metascore %></li>
+    <li>IMDB Rating: <%= movie.imdbRating %></li>
+    <li>Box Office: <%= movie.BoxOffice %></li>
+    <li>Plot: <%= movie.Plot %></li>
+    <li>
+        <form method="POST" action="/faves">
+            <input type="submit" value="Add to Favorites">
+            <input type="hidden" name="title" value="<%= book.title %>">
+            <input type="hidden" name="imdbid" value="<%= book.authors %>">
+        </form>
+    </li>
+</ul>

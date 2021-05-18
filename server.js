@@ -6,8 +6,8 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
-
-
+const axios = require('axios');
+const API_KEY = process.env.API_KEY;
 
 const SECRET_SESSION = process.env.SECRET_SESSION;
 console.log(SECRET_SESSION);
@@ -44,6 +44,38 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+
+
+
+
+app.get('/home', (req,res) => {
+  res.render('home');
+})
+
+app.get('/search', (req,res) => {
+  res.render('search');
+})
+
+app.get('/books/:title', function(req, res) {
+  let input = req.query.titleSearch;
+  // console.log(input);
+  let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${input}`;
+  // sets a variable equal to the API path + search terms
+  axios.get(googleBooksUrl).then(response => {
+    // uses axios to request the JSON data from the googleBooksURL and returns it as "response"
+    let searchReturn = response.data.items;
+    let bookData = [];
+    searchReturn.forEach( e => {
+        bookData.push(e.volumeInfo)
+    });
+    res.render('results', {bookData});
+    // console.log(bookData)
+    // renders the books return page 
+  });
+});
+
+
+
 // app.get('/profile', (req, res) => {
 //   res.render('profile');
 // });
@@ -56,7 +88,7 @@ app.get('/profile', isLoggedIn, (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
 });
