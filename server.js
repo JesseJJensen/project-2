@@ -53,7 +53,7 @@ app.get('/search', (req,res) => {
   res.render('search');
 })
 
-app.get('/books/:title', function(req, res) {
+app.get('/books', function(req, res) {
   let input = req.query.titleSearch;
   // console.log(input);
   let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${input}`;
@@ -65,11 +65,14 @@ app.get('/books/:title', function(req, res) {
     searchReturn.forEach( e => {
         bookData.push(e.volumeInfo)
     });
-    res.render('results', {bookData});
+     console.log(bookData)
+    res.render('results', {results: bookData});
     // console.log(bookData)
     // renders the books return page 
   });
 });
+
+
 
 
 
@@ -83,6 +86,28 @@ app.get('/profile', isLoggedIn, (req, res) => {
   const { id, name, email } = req.user.get(); 
   res.render('profile', { id, name, email });
 });
+
+// post this to my faves table
+app.post('/faves', (req, res)=>{
+  console.log("Form data: ", req.body)
+  db.book.findOrCreate({
+      where: {title: req.body.title},
+      defaults: {bookId: req.body.bookId}
+  })
+  .then(([createdFave, wasCreated]) => {
+      res.redirect('/faves')
+  })
+})
+
+// GET ALL FAVORITES FROM DB
+app.get('/faves', (req, res)=>{
+  db.book.findAll()
+  .then(favorites=>{
+      // res.send(favorites)
+      res.render('faves', {favorites: favorites})
+  })
+})
+
 
 
 const PORT = process.env.PORT || 4000;
