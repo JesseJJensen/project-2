@@ -120,9 +120,8 @@ app.get('/profile', isLoggedIn, (req, res) => {
 app.post('/faves', (req, res)=>{
   console.log("Form data: ", req.body)
   db.fave.findOrCreate({
-      where: {title: req.body.title,bookId: req.body.bookId},
-      defaults: {authors: req.body.authors},
-
+      where: {title: req.body.title,authors: req.body.authors},
+      defaults: {bookId: req.body.bookId},
   })
   .then(([createdFave, wasCreated]) => {
       res.redirect('/faves')
