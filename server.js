@@ -77,10 +77,10 @@ app.get('/results', function(req, res) {
     let searchReturn = response.data.items;
     let bookData = [];
     searchReturn.forEach( e => {
-        bookData.push(e.volumeInfo)
+        bookData.push(e)
     });
      console.log(bookData)
-    res.render('results', {book: bookData});
+    res.render('results', {results: bookData});
 
   });
 });
@@ -93,12 +93,15 @@ app.get('/results/:bookId', function(req, res) {
   axios.get(googleBooksUrl).then(response => {
     // uses axios to request the JSON data from the googleBooksURL and returns it as "response"
     let searchReturn = response.data.items;
+    console.log('here is search return')
+    console.log(searchReturn)
     let bookData = [];
     searchReturn.forEach( e => {
         bookData.push(e)
     });
-    console.log(bookData)
-    res.render('show', {book2: bookData});
+    console.log('here is book data .id')
+    console.log(bookData[0].id)
+    res.render('show', {book: bookData});
 
   });
 });
@@ -124,6 +127,8 @@ app.post('/faves', (req, res)=>{
       defaults: {bookId: req.body.bookId},
   })
   .then(([createdFave, wasCreated]) => {
+    console.log(wasCreated)
+    console.log(createdFave)
       res.redirect('/faves')
   })
 })

@@ -4,7 +4,7 @@
     <% favorites.forEach((book)=>{ %>
         <li>
             <h3><%= book.title %></h3>
-            <a href="/results/<%= book.authors %>">Details</a>
+            <a href="/results/<%= book.bookId %>">Details</a>
         </li>
     <% }) %> 
 </ul>

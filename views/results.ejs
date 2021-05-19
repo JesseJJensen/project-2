@@ -1,20 +1,18 @@
 <h1>THE SEARCH RESULTS</h1>
 
-<% book.forEach ( book => { %>
+<% results.forEach ( result => { %>
     <div class="bookReturn">
         <div>
-            <img src="<%= book.imageLinks.thumbnail %>" alt="<%= book.title %>" style="height: 100px; width: auto;">
-            <h4><%=book.title%> released <%= book.publishedDate %> <a href="/results/<%= book.title %>">Read More</a>
-            <p><%=book.authors%></p>
-            <p><%=book.etag%></p>
-            <p><%=book.publishedDate%></p>
+            <img src="<%= result.volumeInfo.imageLinks.thumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 100px; width: auto;">
+            <h4><%=result.volumeInfo.title%> <a href="/results/<%= result.id %>">Read More</a>
+            <p><%=result.volumeInfo.authors%></p>  
             <br>
         </div>
         <form method="POST" action="/faves">
             <input type="submit" value="Add to Favorites">
-            <input type="hidden" name="title" value="<%= book.title %>">
-            <input type="hidden" name="authors" value="<%= book.authors %>">
-            <input type="hidden" name="bookId" value="<%= book.publishedDate %>">
+            <input type="hidden" name="title" value="<%= result.volumeInfo.title %>">
+            <input type="hidden" name="authors" value="<%= result.volumeInfo.authors %>">
+            <input type="hidden" name="bookId" value="<%= result.id %>">
         </form>
         
     </div>
