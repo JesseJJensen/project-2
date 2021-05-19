@@ -2,8 +2,19 @@
 
 <ul>
     <li>
-        <h3><%= book.title %></h3>
+        <h3>Book id:<%= book2.title %></h3>
+        <p>Kind:<<%= book2.kind %>/p>
+        <p>Kind:<<%= book2.title %>/p>
+
         
+    </li>
+    <li><p><<%= book2.volumInfo %>/p></li>
+    <li>
+        <form method="POST" action="/faves">
+            <input type="submit" value="Add to Favorites">
+            <input type="hidden" name="title" value="<%= book2.title %>">
+            <input type="hidden" name="authors" value="<%= book2.authors %>">
+        </form>
     </li>
 
 </ul>

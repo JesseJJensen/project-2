@@ -1,11 +1,11 @@
 <h1>THE SEARCH RESULTS</h1>
 
-<% results.forEach ( book => { %>
+<% book.forEach ( book => { %>
     <div class="bookReturn">
         <div>
             <img src="<%= book.imageLinks.thumbnail %>" alt="<%= book.title %>" style="height: 100px; width: auto;">
             <h4><%=book.title%> released <%= book.publishedDate %> <a href="/results/<%= book.title %>">Read More</a>
-            <p><%=results.authors%></p>
+            <p><%=book.authors%></p>
             <p><%=book.etag%></p>
             <p><%=book.publishedDate%></p>
             <br>
@@ -14,6 +14,7 @@
             <input type="submit" value="Add to Favorites">
             <input type="hidden" name="title" value="<%= book.title %>">
             <input type="hidden" name="authors" value="<%= book.authors %>">
+            <input type="hidden" name="bookId" value="<%= book.publishedDate %>">
         </form>
         
     </div>

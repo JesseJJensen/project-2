@@ -54,6 +54,19 @@ app.get('/search', (req,res) => {
   res.render('search');
 })
 
+// // movies (results from the search)
+// app.get('/results', (req, res)=>{
+//   let titleSearch = req.query.titleSearch
+//   axios.get(`https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${titleSearch}`)
+//   .then(response=>{
+//       // res.send(response.data)
+//       res.render('results', {results: response.data.items})
+//   })
+// })
+
+
+
+
 app.get('/results', function(req, res) {
   let input = req.query.titleSearch;
   // console.log(input);
@@ -67,13 +80,13 @@ app.get('/results', function(req, res) {
         bookData.push(e.volumeInfo)
     });
      console.log(bookData)
-    res.render('results', {results: bookData});
+    res.render('results', {book: bookData});
 
   });
 });
 
 app.get('/results/:bookId', function(req, res) {
-  let bookId = req.query.titleSearch;
+  let bookId = req.query.bookId;
   // console.log(input);
   let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${bookId}`;
   // sets a variable equal to the API path + search terms
@@ -82,10 +95,10 @@ app.get('/results/:bookId', function(req, res) {
     let searchReturn = response.data.items;
     let bookData = [];
     searchReturn.forEach( e => {
-        bookData.push(e.volumeInfo)
+        bookData.push(e)
     });
-     
-    res.render('show', {book: bookData});
+    console.log(bookData)
+    res.render('show', {book2: bookData});
 
   });
 });
@@ -107,8 +120,9 @@ app.get('/profile', isLoggedIn, (req, res) => {
 app.post('/faves', (req, res)=>{
   console.log("Form data: ", req.body)
   db.fave.findOrCreate({
-      where: {title: req.body.title},
-      defaults: {bookId: req.body.bookId}
+      where: {title: req.body.title,bookId: req.body.bookId},
+      defaults: {authors: req.body.authors},
+
   })
   .then(([createdFave, wasCreated]) => {
       res.redirect('/faves')
