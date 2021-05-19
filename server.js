@@ -8,6 +8,7 @@ const passport = require('./config/ppConfig');
 const isLoggedIn = require('./middleware/isLoggedIn');
 const axios = require('axios');
 const API_KEY = process.env.API_KEY;
+const db = require('./models')
 
 const SECRET_SESSION = process.env.SECRET_SESSION;
 console.log(SECRET_SESSION);
@@ -90,7 +91,7 @@ app.get('/profile', isLoggedIn, (req, res) => {
 // post this to my faves table
 app.post('/faves', (req, res)=>{
   console.log("Form data: ", req.body)
-  db.book.findOrCreate({
+  db.fave.findOrCreate({
       where: {title: req.body.title},
       defaults: {bookId: req.body.bookId}
   })
@@ -101,7 +102,7 @@ app.post('/faves', (req, res)=>{
 
 // GET ALL FAVORITES FROM DB
 app.get('/faves', (req, res)=>{
-  db.book.findAll()
+  db.fave.findAll()
   .then(favorites=>{
       // res.send(favorites)
       res.render('faves', {favorites: favorites})
@@ -110,7 +111,7 @@ app.get('/faves', (req, res)=>{
 
 
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
 });

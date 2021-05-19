@@ -7,3 +7,24 @@ describe('App', function() {
     request(app).get('/').expect(200, done);
   });
 });
+
+
+
+
+
+
+<form method="POST" action="/faves">
+    <input type="submit" value="Add to Favorites">
+    <input type="hidden" name="title" value="<%= book.title %>">
+    <input type="hidden" name="bookId" value="<%= book.id %>">
+</form>
+</li>
+
+
+<p><%=book.authors%></p>
+            <p><%=book.authors%></p>
+            <p><%=book.publishedDate%></p>
+            <p><%=book.publisher%></p>
+            <p><%=book.ratingsCount%></p>
+            <p><%=book.description%></p>
+            <p><%=book.averageRating%></p>
