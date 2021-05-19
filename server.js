@@ -54,7 +54,7 @@ app.get('/search', (req,res) => {
   res.render('search');
 })
 
-app.get('/books', function(req, res) {
+app.get('/results', function(req, res) {
   let input = req.query.titleSearch;
   // console.log(input);
   let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${input}`;
@@ -68,12 +68,27 @@ app.get('/books', function(req, res) {
     });
      console.log(bookData)
     res.render('results', {results: bookData});
-    // console.log(bookData)
-    // renders the books return page 
+
   });
 });
 
+app.get('/results/:bookId', function(req, res) {
+  let bookId = req.query.titleSearch;
+  // console.log(input);
+  let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${bookId}`;
+  // sets a variable equal to the API path + search terms
+  axios.get(googleBooksUrl).then(response => {
+    // uses axios to request the JSON data from the googleBooksURL and returns it as "response"
+    let searchReturn = response.data.items;
+    let bookData = [];
+    searchReturn.forEach( e => {
+        bookData.push(e.volumeInfo)
+    });
+     
+    res.render('show', {book: bookData});
 
+  });
+});
 
 
 

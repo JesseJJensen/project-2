@@ -4,7 +4,7 @@
     <div class="bookReturn">
         <div>
             <img src="<%= book.imageLinks.thumbnail %>" alt="<%= book.title %>" style="height: 100px; width: auto;">
-            <h4><%=book.title%> released <%= book.publishedDate %>
+            <h4><%=book.title%> released <%= book.publishedDate %> <a href="/results/<%= book.title %>">Read More</a>
             <p><%=results.authors%></p>
             <p><%=book.etag%></p>
             <p><%=book.publishedDate%></p>
