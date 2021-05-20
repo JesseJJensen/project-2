@@ -3,7 +3,7 @@
 <% results.forEach ( result => { %>
     <div class="bookReturn">
         <div>
-            <img src="<%= result.volumeInfo.imageLinks.thumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 100px; width: auto;">
+            <img src="<%= result.volumeInfo.imageLinks.smallThumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 100px; width: auto;">
             <h4><%=result.volumeInfo.title%> <a href="/results/<%= result.id %>">Read More</a>
             <p><%=result.volumeInfo.authors%></p>  
             <br>
@@ -14,7 +14,6 @@
             <input type="hidden" name="authors" value="<%= result.volumeInfo.authors %>">
             <input type="hidden" name="bookId" value="<%= result.id %>">
         </form>
-        
     </div>
 <% }) %>
 

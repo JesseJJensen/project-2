@@ -2,9 +2,18 @@
     <h1>Faves Page</h1>
 <ul>
     <% favorites.forEach((book)=>{ %>
-        <li>
-            <h3><%= book.title %></h3>
-            <a href="/results/<%= book.bookId %>">Details</a>
-        </li>
+        <div>
+            <li>
+                <h3><%= book.title %></h3>
+                <p>By:<%= book.authors %></p>
+                
+                <a href="/results/<%= book.bookId %>">Details</a>
+                <form method="POST" action="/faves/<%=book.id%>?_method=DELETE">
+                    <button type="submit" class="btn btn-danger">
+                      Remove Book
+                    </button>
+                </form>
+            </li>
+        </div>
     <% }) %> 
 </ul>

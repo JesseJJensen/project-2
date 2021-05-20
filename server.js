@@ -21,7 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 app.use(layouts);
 
-
 app.use(session({
   secret: SECRET_SESSION,    // What we actually will be giving the user on our site as a session cookie
   resave: false,             // Save the session even if it's modified, make this false
@@ -39,12 +38,9 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 app.get('/', (req, res) => {
   res.render('index');
 });
-
 
 app.get('/home', (req,res) => {
   res.render('home');
@@ -54,15 +50,6 @@ app.get('/search', (req,res) => {
   res.render('search');
 })
 
-// // movies (results from the search)
-// app.get('/results', (req, res)=>{
-//   let titleSearch = req.query.titleSearch
-//   axios.get(`https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${titleSearch}`)
-//   .then(response=>{
-//       // res.send(response.data)
-//       res.render('results', {results: response.data.items})
-//   })
-// })
 
 
 
@@ -106,13 +93,21 @@ app.get('/results/:bookId', function(req, res) {
   });
 });
 
+// app.get('/results/:bookId', (req, res)=>{
+//   let bookId = req.query.bookId
+//   axios.get(`https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${bookId}`)
+//   .then(response=>{
+//       console.log(response.data)
+//       res.render('show', {book: response.data.items})
+//   })
+// })
 
 
-// app.get('/profile', (req, res) => {
-//   res.render('profile');
-// });
 
+// Imports all routes from the pokemon controllers file
+app.use('/books', require('./controllers/books'));
 app.use('/auth', require('./controllers/auth'));
+
 
 app.get('/profile', isLoggedIn, (req, res) => {
   const { id, name, email } = req.user.get(); 
