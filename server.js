@@ -147,13 +147,6 @@ app.get('/results/:bookId', function(req, res) {
 //   })
 // })
 
-
-
-// Imports all routes from the pokemon controllers file
-// app.use('/books', require('./controllers/books'));
-app.use('/auth', require('./controllers/auth'));
-
-
 app.get('/profile', isLoggedIn, (req, res) => {
   const { id, name, email } = req.user.get(); 
   res.render('profile', { id, name, email });
@@ -173,7 +166,30 @@ app.post('/faves', (req, res)=>{
   })
 })
 
+// GET ALL FAVORITES FROM DB
+app.get('/faves', (req, res)=>{
+  db.fave.findAll()
+  .then(favorites=>{
+      // res.send(favorites)
+      res.render('faves', {favorites: favorites})
+  })
+})
 
+app.get('/:id', (req, res) => {
+  db.article.findOne({
+    where: { id: req.params.id },
+    include: [db.user, db.fave]
+  })
+  .then((article) => {
+    if (!article) throw Error()
+    console.log(article.author)
+    res.render('articles/show', { article: article })
+  })
+  .catch((error) => {
+    console.log(error)
+    res.status(400).render('main/404')
+  })
+})
 
 app.delete('/:id', (req, res) => {
   // Delete from the join table
@@ -202,15 +218,7 @@ app.delete('/:id', (req, res) => {
 })
 
 
-
-
-
-
-
-
 let moment = require('moment')
-
-
 app.set('view engine', 'ejs')
 
 app.use(require('morgan')('dev'))
@@ -247,7 +255,9 @@ app.post('/comments', (req, res) => {
     .catch(err => console.log(err));
 });
 
-// bring in authors and articles controllers
+// Imports all routes from the pokemon controllers file
+// app.use('/books', require('./controllers/books'));
+app.use('/auth', require('./controllers/auth'));
 app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 app.use('/comments', require('./controllers/comments'))
