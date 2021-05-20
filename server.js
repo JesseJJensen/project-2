@@ -38,6 +38,11 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
+
+
+
 app.get('/', (req, res) => {
   res.render('index');
 });
@@ -49,6 +54,46 @@ app.get('/home', (req,res) => {
 app.get('/search', (req,res) => {
   res.render('search');
 })
+
+
+
+app.get('/home', isLoggedIn, (req, res) => {
+  db.post.findAll()
+  .then( foundPosts => {
+    let allPosts = [];
+    foundPosts.forEach(post =>{
+      allPosts.push(post.dataValues)
+    })
+    res.render('home', {allPosts});
+  })
+});
+
+// Renders Page to Create a New Post
+app.get('/new', isLoggedIn, (req,res) => {
+  const user = req.user.get()
+  res.render('new', {user})
+})
+
+// Renders Info on a Specific Post to the Page
+app.get('/home/:title', isLoggedIn, (req,res) => {
+  const user = req.user.get()
+  db.post.findOne({
+    where: 
+    {title: req.params.title}
+    // include: [db.comment]
+  })
+  .then(thisPost => {
+    let postData = thisPost
+    // let allComments = thisPost.dataValues.comments
+    console.log(`~~~~~~~~Here is post data~~~~~~~~~`)
+    console.log(postData)
+    // res.render('show', {postData, allComments, user});
+    res.render('show', {postData, user})
+   
+  })
+});
+
+
 
 
 
@@ -105,7 +150,7 @@ app.get('/results/:bookId', function(req, res) {
 
 
 // Imports all routes from the pokemon controllers file
-app.use('/books', require('./controllers/books'));
+// app.use('/books', require('./controllers/books'));
 app.use('/auth', require('./controllers/auth'));
 
 
@@ -128,14 +173,84 @@ app.post('/faves', (req, res)=>{
   })
 })
 
-// GET ALL FAVORITES FROM DB
-app.get('/faves', (req, res)=>{
-  db.fave.findAll()
-  .then(favorites=>{
-      // res.send(favorites)
-      res.render('faves', {favorites: favorites})
+
+
+app.delete('/:id', (req, res) => {
+  // Delete from the join table
+  db.faves.destroy({
+    where: { categoryId: req.params.id }
+  })
+  .then(() => {
+    // Now I am free to delete the category itself
+    db.category.destroy({
+      where: { id: req.params.id }
+    })
+    .then(destroyedCategory => {
+      res.redirect('/categories')
+    })
+    .catch(err => {
+      console.log('Oh no what happened', err)
+      res.render('main/404')
+    })
+  })
+  .catch(err => {
+    console.log('Oh no what happened', err)
+    res.render('main/404')
+  })
+
+
+})
+
+
+
+
+
+
+
+
+let moment = require('moment')
+
+
+app.set('view engine', 'ejs')
+
+app.use(require('morgan')('dev'))
+app.use(express.urlencoded({ extended: false }))
+app.use(layouts)
+app.use(express.static(__dirname + '/public/'))
+
+// middleware that allows us to access the 'moment' library in every EJS view
+app.use((req, res, next) => {
+  res.locals.moment = moment
+  next()
+})
+
+// GET / - display all articles and their authors
+app.get('/', (req, res) => {
+  db.article.findAll({
+    include: [db.author]
+  }).then((articles) => {
+    res.render('main/index', { articles: articles })
+  }).catch((error) => {
+    console.log(error)
+    res.status(400).render('main/404')
   })
 })
+
+app.post('/comments', (req, res) => {
+  db.comment
+    .create({
+      content: req.body.content,
+      name: req.body.name,
+      articleId: req.body.articleId,
+    })
+    .then(res.redirect(`articles/${req.body.articleId}`))
+    .catch(err => console.log(err));
+});
+
+// bring in authors and articles controllers
+app.use('/authors', require('./controllers/authors'))
+app.use('/articles', require('./controllers/articles'))
+app.use('/comments', require('./controllers/comments'))
 
 
 

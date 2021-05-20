@@ -1,0 +1,51 @@
+<h1><%= article.title %> <small>by <%= article.author.getFullName() %></small></h1>
+
+<p>
+  <strong><%= moment(article.createdAt).calendar() %></strong>
+</p>
+
+<p><%= article.content %></p>
+
+<hr />
+
+<h3>Comments from the Community</h3>
+
+<% if(article.comments && article.comments.length) { %>
+  <% article.comments.forEach((c) => { %>
+    <p>
+      <em>&lsquo;<%= c.content %>&rsquo;</em>
+      &mdash;<%= c.name %>
+    </p>
+  <% }) %>
+<% } else { %>
+  <p>Be the first to comment on this article</p>
+<% } %>
+
+<hr>
+
+<h3>Add your own comment</h3>
+
+<form class="col-sm-12" method="POST" action="/comments">
+  <input type="hidden" name="articleId" value="<%=article.id%>">
+  <div class="row">
+    <div class="input-field col-sm-12">
+      <input placeholder="Your Name" id="name" name="name" type="text" class="form-control">
+      <label for="name">Your Name</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field  col-xs-12">
+      <textarea id="content" name="content" class="form-control"></textarea>
+      <label for="content">Your Thoughts</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <button class="btn btn-primary" type="submit">
+        Add Your Two Cents
+      </button>
+    </div>
+  </div>
+</form>
+
+<a href="/">&larr; Back Home</a>
