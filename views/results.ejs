@@ -2,22 +2,29 @@
 
 <div class="container">
 <% results.forEach ( result => { %>
-    <div class="container">
+    <div class="card">
     
-            <img src="<%= result.volumeInfo.imageLinks.smallThumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 200px; width: auto;">
             <h4><%=result.volumeInfo.title%> <a href="/results/<%= result.id %>">Read More</a>
             <p><%=result.volumeInfo.authors%></p> 
+            <%=result.volumeInfo.description%>
+            <% if (result.volumeInfo.imageLinks){%>
+            <img src="<%= result.volumeInfo.imageLinks.thumbnail %>" alt="Cover: <%=result.volumeInfo.title%>">
+            <% }else { %>
+                <h1>no image available</h1>
+            <% } %>
             <form method="POST" action="/faves">
                 <input type="hidden" name="userId" value="<%= user.id%>">
                 <input type="hidden" name="title" value="<%= result.volumeInfo.title %>">
                 <input type="hidden" name="authors" value="<%= result.volumeInfo.authors %>">
+                
                 <input type="hidden" name="bookId" value="<%= result.id %>">
                 <% if (result.volumeInfo.imageLinks){%>
+                    
                 <input hidden type="text" name="bookCover" value="<%=result.volumeInfo.imageLinks.thumbnail %>">
                 <% }else { %>
                 <input hidden type="text" name="bookCover" value="null">
                 <% } %>
-                <button class="btn btn-outline-danger" type="submit">Add to Favorites</button>
+                <button class="btn btn-container" type="submit">Add to Favorites</button>
             </form>
     </div>
 <% }) %>
