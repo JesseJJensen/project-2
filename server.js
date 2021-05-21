@@ -162,7 +162,7 @@ app.use('/articles', require('./controllers/articles'))
 app.use('/comments', require('./controllers/comments'))
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
 });
