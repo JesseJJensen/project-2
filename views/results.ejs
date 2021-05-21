@@ -1,21 +1,27 @@
 <h1>THE SEARCH RESULTS</h1>
 
+<div class="container">
 <% results.forEach ( result => { %>
-    <div class="bookReturn">
-        <div>
-            <img src="<%= result.volumeInfo.imageLinks.smallThumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 100px; width: auto;">
+    <div class="container">
+    
+            <img src="<%= result.volumeInfo.imageLinks.smallThumbnail %>" alt="<%= result.volumeInfo.title %>" style="height: 200px; width: auto;">
             <h4><%=result.volumeInfo.title%> <a href="/results/<%= result.id %>">Read More</a>
-            <p><%=result.volumeInfo.authors%></p>  
-            <br>
-        </div>
-        <form method="POST" action="/faves">
-            <input type="submit" value="Add to Favorites">
-            <input type="hidden" name="title" value="<%= result.volumeInfo.title %>">
-            <input type="hidden" name="authors" value="<%= result.volumeInfo.authors %>">
-            <input type="hidden" name="bookId" value="<%= result.id %>">
-        </form>
+            <p><%=result.volumeInfo.authors%></p> 
+            <form method="POST" action="/faves">
+                <input type="hidden" name="userId" value="<%= user.id%>">
+                <input type="hidden" name="title" value="<%= result.volumeInfo.title %>">
+                <input type="hidden" name="authors" value="<%= result.volumeInfo.authors %>">
+                <input type="hidden" name="bookId" value="<%= result.id %>">
+                <% if (result.volumeInfo.imageLinks){%>
+                <input hidden type="text" name="bookCover" value="<%=result.volumeInfo.imageLinks.thumbnail %>">
+                <% }else { %>
+                <input hidden type="text" name="bookCover" value="null">
+                <% } %>
+                <button class="btn btn-outline-danger" type="submit">Add to Favorites</button>
+            </form>
     </div>
 <% }) %>
+    
+</div>
 
-</li>
 

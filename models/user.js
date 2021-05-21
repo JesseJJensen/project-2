@@ -1,6 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt');
 
+
 const {
   Model
 } = require('sequelize');
@@ -13,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.user.hasMany(models.comment)
+      models.user.hasMany(models.fave)
     }
   };
   user.init({
@@ -46,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'user',
   });
+
 
   // Before a user is created, we are encrypting the password and using hash in its place
   user.addHook('beforeCreate', (pendingUser) => { // pendingUser is user object that gets passed to DB

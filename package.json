@@ -36,7 +36,6 @@
     "pg": "^8.6.0",
     "rowdy-logger": "0.0.2",
     "sequelize": "^6.6.2"
-
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   fave.init({
     title: DataTypes.STRING,
     authors: DataTypes.STRING,
+    subtitle: DataTypes.STRING,
+    description: DataTypes.STRING,
+    userId: DataTypes.INTEGER,
+    bookCover: DataTypes.STRING,
+    imageLink: DataTypes.STRING,
     bookId: DataTypes.STRING
   }, {
     sequelize,

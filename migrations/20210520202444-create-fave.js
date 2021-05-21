@@ -14,6 +14,21 @@ module.exports = {
       authors: {
         type: Sequelize.STRING
       },
+      subtitle: {
+        type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.STRING
+      },
+      userId: {
+        type: Sequelize.INTEGER
+      },
+      bookCover: {
+        type: Sequelize.STRING
+      },
+      imageLink: {
+        type: Sequelize.STRING
+      },
       bookId: {
         type: Sequelize.STRING
       },

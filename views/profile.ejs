@@ -1,7 +1,16 @@
-<h2>Profile Page</h2>
 
-<h3>Welcome to your PROFILE</h3>
-
-<p>Id: <%= id %></p>
-<p>Name: <%= name %></p>
-<p>Email: <%= email %></p>
+<div class="container">
+    <h3>my favorites</h3>
+    
+    <% favoriteBooks.forEach(book => { %>
+        <% if(book.dataValues.userId === user.id){ %>
+        <div>
+            <h3><%= book.dataValues.title %></h3>
+            <p><%= book.dataValues.subtitle %></p>
+            <p><%= book.dataValues.authors %></p>
+            <p><%= book.dataValues.description %></p>
+            <img src="<%= book.dataValues.bookCover%>" alt="cover of <%= book.dataValues.title %>">
+            <form method="POST" action="/remove/<%= book.dataValues.id %>?_method=DELETE"><button class="btn btn-outline-danger" >Remove from Favorites</button></form>
+        </div>
+    <% }}) %>
+    </div>

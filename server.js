@@ -9,6 +9,7 @@ const isLoggedIn = require('./middleware/isLoggedIn');
 const axios = require('axios');
 const API_KEY = process.env.API_KEY;
 const db = require('./models')
+const methodOverride = require('method-override')
 
 const SECRET_SESSION = process.env.SECRET_SESSION;
 console.log(SECRET_SESSION);
@@ -20,6 +21,7 @@ app.use(require('morgan')('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 app.use(layouts);
+app.use(methodOverride(`_method`));
 
 app.use(session({
   secret: SECRET_SESSION,    // What we actually will be giving the user on our site as a session cookie
@@ -38,68 +40,17 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
-
-
-
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/home', (req,res) => {
-  res.render('home');
-})
-
-app.get('/search', (req,res) => {
+// Renders Search Page
+app.get('/search', isLoggedIn, (req,res) => {
   res.render('search');
 })
 
-
-
-app.get('/home', isLoggedIn, (req, res) => {
-  db.post.findAll()
-  .then( foundPosts => {
-    let allPosts = [];
-    foundPosts.forEach(post =>{
-      allPosts.push(post.dataValues)
-    })
-    res.render('home', {allPosts});
-  })
-});
-
-// Renders Page to Create a New Post
-app.get('/new', isLoggedIn, (req,res) => {
+app.get('/results', isLoggedIn, (req, res) => {
   const user = req.user.get()
-  res.render('new', {user})
-})
-
-// Renders Info on a Specific Post to the Page
-app.get('/home/:title', isLoggedIn, (req,res) => {
-  const user = req.user.get()
-  db.post.findOne({
-    where: 
-    {title: req.params.title}
-    // include: [db.comment]
-  })
-  .then(thisPost => {
-    let postData = thisPost
-    // let allComments = thisPost.dataValues.comments
-    console.log(`~~~~~~~~Here is post data~~~~~~~~~`)
-    console.log(postData)
-    // res.render('show', {postData, allComments, user});
-    res.render('show', {postData, user})
-   
-  })
-});
-
-
-
-
-
-
-
-app.get('/results', function(req, res) {
   let input = req.query.titleSearch;
   // console.log(input);
   let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${input}`;
@@ -112,7 +63,7 @@ app.get('/results', function(req, res) {
         bookData.push(e)
     });
      console.log(bookData)
-    res.render('results', {results: bookData});
+    res.render('results', {results: bookData, user});
 
   });
 });
@@ -127,7 +78,7 @@ app.get('/results/:bookId', function(req, res) {
     let searchReturn = response.data.items;
     console.log('here is search return')
     console.log(searchReturn)
-    let bookData = [];
+    //let bookData = [];
     searchReturn.forEach( e => {
         bookData.push(e)
     });
@@ -147,121 +98,68 @@ app.get('/results/:bookId', function(req, res) {
 //   })
 // })
 
+// Renders User Profile
 app.get('/profile', isLoggedIn, (req, res) => {
-  const { id, name, email } = req.user.get(); 
-  res.render('profile', { id, name, email });
-});
-
-// post this to my faves table
-app.post('/faves', (req, res)=>{
-  console.log("Form data: ", req.body)
-  db.fave.findOrCreate({
-      where: {title: req.body.title,authors: req.body.authors},
-      defaults: {bookId: req.body.bookId},
-  })
-  .then(([createdFave, wasCreated]) => {
-    console.log(wasCreated)
-    console.log(createdFave)
-      res.redirect('/faves')
-  })
-})
-
-// GET ALL FAVORITES FROM DB
-app.get('/faves', (req, res)=>{
+  const user = req.user.get()
   db.fave.findAll()
-  .then(favorites=>{
-      // res.send(favorites)
-      res.render('faves', {favorites: favorites})
+  .then(favoriteBooks => {
+    res.render('profile', {favoriteBooks, user});
   })
-})
-
-app.get('/:id', (req, res) => {
-  db.article.findOne({
-    where: { id: req.params.id },
-    include: [db.user, db.fave]
-  })
-  .then((article) => {
-    if (!article) throw Error()
-    console.log(article.author)
-    res.render('articles/show', { article: article })
-  })
-  .catch((error) => {
-    console.log(error)
-    res.status(400).render('main/404')
-  })
-})
-
-app.delete('/:id', (req, res) => {
-  // Delete from the join table
-  db.faves.destroy({
-    where: { categoryId: req.params.id }
-  })
-  .then(() => {
-    // Now I am free to delete the category itself
-    db.category.destroy({
-      where: { id: req.params.id }
-    })
-    .then(destroyedCategory => {
-      res.redirect('/categories')
-    })
-    .catch(err => {
-      console.log('Oh no what happened', err)
-      res.render('main/404')
-    })
-  })
-  .catch(err => {
-    console.log('Oh no what happened', err)
-    res.render('main/404')
-  })
-
-
-})
-
-
-let moment = require('moment')
-app.set('view engine', 'ejs')
-
-app.use(require('morgan')('dev'))
-app.use(express.urlencoded({ extended: false }))
-app.use(layouts)
-app.use(express.static(__dirname + '/public/'))
-
-// middleware that allows us to access the 'moment' library in every EJS view
-app.use((req, res, next) => {
-  res.locals.moment = moment
-  next()
-})
-
-// GET / - display all articles and their authors
-app.get('/', (req, res) => {
-  db.article.findAll({
-    include: [db.author]
-  }).then((articles) => {
-    res.render('main/index', { articles: articles })
-  }).catch((error) => {
-    console.log(error)
-    res.status(400).render('main/404')
-  })
-})
-
-app.post('/comments', (req, res) => {
-  db.comment
-    .create({
-      content: req.body.content,
-      name: req.body.name,
-      articleId: req.body.articleId,
-    })
-    .then(res.redirect(`articles/${req.body.articleId}`))
-    .catch(err => console.log(err));
+  
 });
 
-// Imports all routes from the pokemon controllers file
-// app.use('/books', require('./controllers/books'));
+app.post('/faves', isLoggedIn, function(req, res) {
+  db.fave.create(req.body)   
+  .then( b =>{
+    res.redirect('/profile')
+    // profile page is bookshelf
+  })
+})
+// GET ALL FAVORITES FROM DB
+// app.get('/faves', (req, res)=>{
+//   db.fave.findAll()
+//   .then(favorites=>{
+//       // res.send(favorites)
+//       res.render('faves', {favorites: favorites})
+//   })
+// })
+
+app.delete("/remove/:id", (req, res) => {
+  db.fave.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/profile");
+});
+// app.delete('/:id', (req, res) => {
+//   // Delete from the join table
+//   db.faves.destroy({
+//     where: { categoryId: req.params.id }
+//   })
+//   .then(() => {
+//     // Now I am free to delete the category itself
+//     db.category.destroy({
+//       where: { id: req.params.id }
+//     })
+//     .then(destroyedCategory => {
+//       res.redirect('/categories')
+//     })
+//     .catch(err => {
+//       console.log('Oh no what happened', err)
+//       res.render('main/404')
+//     })
+//   })
+//   .catch(err => {
+//     console.log('Oh no what happened', err)
+//     res.render('main/404')
+//   })
+// })
+
+// Imports all routes from the not pokemon controllers file
+app.use('/faves', require('./controllers/faves'));
 app.use('/auth', require('./controllers/auth'));
 app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 app.use('/comments', require('./controllers/comments'))
-
 
 
 const PORT = process.env.PORT || 5000;

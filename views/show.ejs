@@ -1,16 +1,19 @@
-<h1>Show Page</h1>
-
-<ul>
-    <li>
-        <h3>Book id:<%= book[0].id %></h3>
-
-        <img src="<%= book.imageLinks %>" alt="<%= book.title %>" style="height: 100px; width: auto;">
-        <form method="POST" action="/faves">
-            <input type="submit" value="Add to Favorites">
-            <input type="hidden" name="title" value="<%= book.title %>">
-            <input type="hidden" name="authors" value="<%= book.authors %>">
-            <input type="hidden" name="bookId" value="<%= book[0].id %>">
-        </form>
-    </li>
 
 </ul>
+<body>
+    <% book.forEach ( result => { %>
+        <div class="container">
+            <h3>Book id:<%= book.id %></h3>
+
+            <img src="<%= book.imageLinks %>" alt="<%= book.title %>" style="height: 500px; width: auto;">
+            <form method="POST" action="/faves">
+                <input type="submit" value="Add to Favorites">
+                <input type="hidden" name="title" value="<%= book.title %>">
+                <input type="hidden" name="authors" value="<%= book.authors %>">
+                <input type="hidden" name="bookId" value="<%= book[0].id %>">
+            </form>
+
+        </div>
+    <% }) %>
+        
+    </body>
