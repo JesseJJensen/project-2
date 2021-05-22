@@ -10,15 +10,21 @@ const axios = require('axios');
 const API_KEY = process.env.API_KEY;
 const db = require('./models')
 const methodOverride = require('method-override')
-
 let moment = require('moment')
-// let rowdy = require('rowdy-logger')
-// rowdy.begin(app)
+let rowdy = require('rowdy-logger')
+
+const SECRET_SESSION = process.env.SECRET_SESSION;
+console.log(SECRET_SESSION);
+
+rowdy.begin(app)
+
 app.set('view engine', 'ejs')
+
 app.use(require('morgan')('dev'))
 app.use(express.urlencoded({ extended: false }))
 app.use(layouts)
 app.use(express.static(__dirname + '/public/'))
+app.use(methodOverride(`_method`));
 
 
 // middleware that allows us to access the 'moment' library in every EJS view
@@ -26,51 +32,6 @@ app.use((req, res, next) => {
   res.locals.moment = moment
   next()
 })
-
-//GET / - display all articles and their authors
-// app.get('/', (req, res) => {
-//   db.article.findAll({
-//     include: [db.author]
-//   }).then((articles) => {
-//     res.send('main/index', { articles: articles })
-//   }).catch((error) => {
-//     console.log(error)
-//     res.status(400).render('main/404')
-//   })
-// })
-
-// app.post('/comments', (req, res) => {
-//   db.comment
-//     .create({
-//       content: req.body.content,
-//       name: req.body.name,
-//       articleId: req.body.articleId,
-//     })
-//     .then(res.redirect(`articles/${req.body.articleId}`))
-//     .catch(err => console.log(err));
-// });
-
-
-
-// app.set('view engine', 'ejs')
-
-// app.use(require('morgan')('dev'))
-// app.use(express.urlencoded({ extended: false }))
-// app.use(layouts)
-// app.use(express.static(__dirname + '/public/'))
-
-
-const SECRET_SESSION = process.env.SECRET_SESSION;
-console.log(SECRET_SESSION);
-
-
-app.set('view engine', 'ejs');
-
-app.use(require('morgan')('dev'));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + '/public'));
-app.use(layouts);
-app.use(methodOverride(`_method`));
 
 app.use(session({
   secret: SECRET_SESSION,    // What we actually will be giving the user on our site as a session cookie
@@ -89,12 +50,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// Renders User Profile
+app.get('/profile', isLoggedIn, (req, res) => {
+  const user = req.user.get()
+  db.fave.findAll()
+  .then(favoriteBooks => {
+    res.render('profile', {favoriteBooks, user});
+  })
+  
+});
+
+// // GET / - display homepage
 // app.get('/', (req, res) => {
 //   res.render('index');
 // });
 
-
-//GET / - display all articles and their authors
+// GET / - display all articles and their authors
 app.get('/', (req, res) => {
   db.article.findAll({
     include: [db.author]
@@ -106,14 +77,24 @@ app.get('/', (req, res) => {
   })
 })
 
+// POST / - adds comments to article
+app.post('/comments', (req, res) => {
+  db.comment
+    .create({
+      content: req.body.content,
+      name: req.body.name,
+      articleId: req.body.articleId,
+    })
+    .then(res.redirect(`articles/${req.body.articleId}`))
+    .catch(err => console.log(err));
+});
 
-
-
-// Renders Search Page
+// GET / Renders Search Page
 app.get('/search', isLoggedIn, (req,res) => {
   res.render('search');
 })
 
+// GET / uses google book api to display books on results page
 app.get('/results', isLoggedIn, (req, res) => {
   const user = req.user.get()
   let input = req.query.titleSearch;
@@ -133,93 +114,23 @@ app.get('/results', isLoggedIn, (req, res) => {
   });
 });
 
-// app.get('/results/:bookId', function(req, res) {
-//   let bookId = req.query.bookId;
-//   // console.log(input);
-//   let googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${bookId}`;
-//   // sets a variable equal to the API path + search terms
-//   axios.get(googleBooksUrl).then(response => {
-//     // uses axios to request the JSON data from the googleBooksURL and returns it as "response"
-//     let searchReturn = response.data.items;
-//     console.log('here is search return')
-//     console.log(searchReturn)
-//     //let bookData = [];
-//     searchReturn.forEach( e => {
-//         bookData.push(e)
-//     });
-//     console.log('here is book data .id')
-//     console.log(bookData[0].id)
-//     res.render('show', {book: bookData});
-
-//   });
-// });
-
-// app.get('/results/:bookId', (req, res)=>{
-//   let bookId = req.query.bookId
-//   axios.get(`https://www.googleapis.com/books/v1/volumes?${API_KEY}&q=${bookId}`)
-//   .then(response=>{
-//       console.log(response.data)
-//       res.render('show', {book: response.data.items})
-//   })
-// })
-
-// Renders User Profile
-app.get('/profile', isLoggedIn, (req, res) => {
-  const user = req.user.get()
-  db.fave.findAll()
-  .then(favoriteBooks => {
-    res.render('profile', {favoriteBooks, user});
-  })
-  
-});
-
+// profile is library
 app.post('/faves', isLoggedIn, function(req, res) {
   db.fave.create(req.body)   
   .then( b =>{
     res.redirect('/profile')
-    // profile page is bookshelf
   })
 })
-// GET ALL FAVORITES FROM DB
-// app.get('/faves', (req, res)=>{
-//   db.fave.findAll()
-//   .then(favorites=>{
-//       // res.send(favorites)
-//       res.render('faves', {favorites: favorites})
-//   })
-// })
 
+//Delete fave from db
 app.delete("/remove/:id", (req, res) => {
   db.fave.destroy({
     where: {id: req.params.id },
   });
   res.redirect("/profile");
 });
-// app.delete('/:id', (req, res) => {
-//   // Delete from the join table
-//   db.faves.destroy({
-//     where: { categoryId: req.params.id }
-//   })
-//   .then(() => {
-//     // Now I am free to delete the category itself
-//     db.category.destroy({
-//       where: { id: req.params.id }
-//     })
-//     .then(destroyedCategory => {
-//       res.redirect('/categories')
-//     })
-//     .catch(err => {
-//       console.log('Oh no what happened', err)
-//       res.render('main/404')
-//     })
-//   })
-//   .catch(err => {
-//     console.log('Oh no what happened', err)
-//     res.render('main/404')
-//   })
-// })
 
-// Imports all routes from the not pokemon controllers file
+// Imports all routes from the controllers file
 app.use('/faves', require('./controllers/faves'));
 app.use('/auth', require('./controllers/auth'));
 app.use('/authors', require('./controllers/authors'))
@@ -230,7 +141,7 @@ app.use('/comments', require('./controllers/comments'))
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
-  // rowdy.print()
+  rowdy.print()
 });
 
 module.exports = server;

@@ -1,1 +1,12 @@
 <h2>Homepage</h2>
+<% articles.forEach(function(a) { %>
+    <div class="well">
+      <h2>
+        <a href="/articles/<%= a.id %>"><%= a.title %></a>
+        <small>by <%= a.author.getFullName() %></small>
+      </h2>
+      <p>
+        <strong><%= moment(a.createdAt).calendar() %></strong>
+      </p>
+    </div>
+  <% }) %>
