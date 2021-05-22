@@ -3,7 +3,7 @@ let db = require('../models')
 let router = express.Router()
 
 // POST /articles - create a new post
-router.post('/:article', (req, res) => {
+router.post('/', (req, res) => {
   db.article.create({
     title: req.body.title,
     content: req.body.content,

@@ -12,8 +12,8 @@ const db = require('./models')
 const methodOverride = require('method-override')
 
 let moment = require('moment')
-let rowdy = require('rowdy-logger')
-rowdy.begin(app)
+// let rowdy = require('rowdy-logger')
+// rowdy.begin(app)
 app.set('view engine', 'ejs')
 app.use(require('morgan')('dev'))
 app.use(express.urlencoded({ extended: false }))
@@ -89,9 +89,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// app.get('/', (req, res) => {
+//   res.render('index');
+// });
 
 
 //GET / - display all articles and their authors
@@ -230,7 +230,7 @@ app.use('/comments', require('./controllers/comments'))
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
-  rowdy.print()
+  // rowdy.print()
 });
 
 module.exports = server;
