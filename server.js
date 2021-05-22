@@ -11,6 +11,55 @@ const API_KEY = process.env.API_KEY;
 const db = require('./models')
 const methodOverride = require('method-override')
 
+let moment = require('moment')
+let rowdy = require('rowdy-logger')
+rowdy.begin(app)
+app.set('view engine', 'ejs')
+app.use(require('morgan')('dev'))
+app.use(express.urlencoded({ extended: false }))
+app.use(layouts)
+app.use(express.static(__dirname + '/public/'))
+
+
+// middleware that allows us to access the 'moment' library in every EJS view
+app.use((req, res, next) => {
+  res.locals.moment = moment
+  next()
+})
+
+//GET / - display all articles and their authors
+// app.get('/', (req, res) => {
+//   db.article.findAll({
+//     include: [db.author]
+//   }).then((articles) => {
+//     res.send('main/index', { articles: articles })
+//   }).catch((error) => {
+//     console.log(error)
+//     res.status(400).render('main/404')
+//   })
+// })
+
+// app.post('/comments', (req, res) => {
+//   db.comment
+//     .create({
+//       content: req.body.content,
+//       name: req.body.name,
+//       articleId: req.body.articleId,
+//     })
+//     .then(res.redirect(`articles/${req.body.articleId}`))
+//     .catch(err => console.log(err));
+// });
+
+
+
+// app.set('view engine', 'ejs')
+
+// app.use(require('morgan')('dev'))
+// app.use(express.urlencoded({ extended: false }))
+// app.use(layouts)
+// app.use(express.static(__dirname + '/public/'))
+
+
 const SECRET_SESSION = process.env.SECRET_SESSION;
 console.log(SECRET_SESSION);
 
@@ -43,6 +92,22 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.render('index');
 });
+
+
+//GET / - display all articles and their authors
+app.get('/', (req, res) => {
+  db.article.findAll({
+    include: [db.author]
+  }).then((articles) => {
+    res.send('main/index', { articles: articles })
+  }).catch((error) => {
+    console.log(error)
+    res.status(400).render('main/404')
+  })
+})
+
+
+
 
 // Renders Search Page
 app.get('/search', isLoggedIn, (req,res) => {
@@ -165,6 +230,7 @@ app.use('/comments', require('./controllers/comments'))
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);
+  rowdy.print()
 });
 
 module.exports = server;

@@ -3,7 +3,7 @@ let db = require('../models')
 let router = express.Router()
 
 // POST /articles - create a new post
-router.post('/', (req, res) => {
+router.post('/:article', (req, res) => {
   db.article.create({
     title: req.body.title,
     content: req.body.content,
@@ -29,7 +29,7 @@ router.get('/new', (req, res) => {
 })
 
 // GET /articles/:id - display a specific post and its author
-router.get('/:id', (req, res) => {
+router.get('/art/ :id', (req, res) => {
   db.article.findOne({
     where: { id: req.params.id },
     include: [db.author, db.comment]
