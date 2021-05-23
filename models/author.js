@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     static associate(models) {
+    static associate(models) {
+      // define association here
       models.author.hasMany(models.article)
     }
 
@@ -20,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   author.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    bio: DataTypes.TEXT
+    bio: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'author',

@@ -89,6 +89,7 @@ app.post('/comments', (req, res) => {
     .catch(err => console.log(err));
 });
 
+
 // GET / Renders Search Page
 app.get('/search', isLoggedIn, (req,res) => {
   res.render('search');
@@ -129,6 +130,17 @@ app.delete("/remove/:id", (req, res) => {
   });
   res.redirect("/profile");
 });
+
+// Edit a comment
+app.put('/edit', (req,res) => {
+  db.comment.update(
+    {content: req.body.content},
+    {
+    where: {id: req.body.commentId}
+  })
+  .then(res.redirect(`articles/${req.body.articleId}`))
+  .catch(err => console.log(err));
+})
 
 // Imports all routes from the controllers file
 app.use('/faves', require('./controllers/faves'));

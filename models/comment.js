@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.comment.belongsTo(models.post)
+      models.comment.belongsTo(models.user)
       models.comment.belongsTo(models.article);
     }
   };
@@ -18,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     content: DataTypes.TEXT,
     articleId: DataTypes.INTEGER,
-    userid: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
+    postId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'comment',
