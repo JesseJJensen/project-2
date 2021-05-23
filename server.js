@@ -70,7 +70,7 @@ app.get('/', (req, res) => {
   db.article.findAll({
     include: [db.author]
   }).then((articles) => {
-    res.send('index', { articles: articles })
+    res.render('index', { articles: articles })
   }).catch((error) => {
     console.log(error)
     res.status(400).render('main/404')

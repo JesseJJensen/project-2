@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.author.hasMany(models.article)
     }
+
     getFullName() {
       return this.firstName + this.lastName
     }

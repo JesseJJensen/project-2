@@ -2,7 +2,7 @@
 
 const authorData = [
   {
-    firstName: 'Jesse',
+    firstName: 'JesseJ',
     lastName: 'Jensen',
     bio: 'I am a author, and this is how I make a living',
     createdAt: new Date(),
