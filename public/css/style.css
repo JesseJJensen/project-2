@@ -168,11 +168,7 @@ p {
     column-gap: 4rem;
   }
 }
-@media screen and (min-width: 992px) {
-  .section-center {
-    width: 95vw; */
-  }
-}
+?
 /* loading */
 .loading {
   min-height: 100vh;

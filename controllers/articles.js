@@ -2,7 +2,6 @@ let express = require('express')
 let db = require('../models')
 let router = express.Router()
 
-
 // POST /articles - create a new post
 router.post('/', (req, res) => {
   db.article.create({
@@ -58,7 +57,6 @@ router.put('/:id', (req, res) => {
     res.redirect('/')
   })
 })
-
 
 //Delete fave from db
 router.delete("/remove/:id", (req, res) => {

@@ -26,7 +26,6 @@ app.use(layouts)
 app.use(express.static(__dirname + '/public/'))
 app.use(methodOverride(`_method`));
 
-
 // middleware that allows us to access the 'moment' library in every EJS view
 app.use((req, res, next) => {
   res.locals.moment = moment
@@ -50,7 +49,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Renders User Profile
+
+// ========================================================
+//                   GET and POST
+// ========================================================
+
+// GET / Renders User Profile
 app.get('/profile', isLoggedIn, (req, res) => {
   const user = req.user.get()
   db.fave.findAll()
@@ -59,10 +63,6 @@ app.get('/profile', isLoggedIn, (req, res) => {
   })
   
 });
-
-
-
-
 
 // GET / - display all articles and their authors
 app.get('/', (req, res) => {
@@ -76,25 +76,10 @@ app.get('/', (req, res) => {
   })
 })
 
-
-// POST / - adds comments to article
-// app.post('/comments', (req, res) => {
-//   db.comment
-//     .create({
-//       content: req.body.content,
-//       name: req.body.name,
-//       articleId: req.body.articleId,
-//     })
-//     .then(res.redirect(`articles/${req.body.articleId}`))
-//     .catch(err => console.log(err));
-// });
-
-
-
+// GET / Renders Article Edit Page
 app.get('/articles/edit/:id', (req, res) => {
   db.article.findOne({
     where: { id: req.params.id },
-    
   })
   .then((article) => {
     if (!article) throw Error()
@@ -106,11 +91,6 @@ app.get('/articles/edit/:id', (req, res) => {
     res.status(400).render('main/404')
   })
 })
-
-
-
-
-
 
 // GET / Renders Search Page
 app.get('/search', isLoggedIn, (req,res) => {
@@ -137,7 +117,7 @@ app.get('/results', isLoggedIn, (req, res) => {
   });
 });
 
-// profile is library
+// POST / profile is library
 app.post('/faves', isLoggedIn, function(req, res) {
   db.fave.create(req.body)   
   .then( b =>{
@@ -145,19 +125,17 @@ app.post('/faves', isLoggedIn, function(req, res) {
   })
 })
 
+// ========================================================
+//                   PUT and DELETE
+// ========================================================
 
-//Delete fave from db
+// DELETE / Removes book from fave DB
 app.delete("/remove/:id", (req, res) => {
   db.fave.destroy({
     where: {id: req.params.id },
   });
   res.redirect("/profile");
 });
-
-
-// ========================================================
-//                   PUT and DELETE
-// ========================================================
 
 app.delete('/articles/:id', (req, res) => {
   db.article.destroy({
@@ -184,66 +162,9 @@ app.delete('/articles/:id', (req, res) => {
 13. Render or redirect back to a page or route
 */
 
-// app.put('/dinosaurs/:idx', (req, res) => {
-//   console.log('Inside of PUT /dinosaurs/:idx');
-//   const dinosaurs = fs.readFileSync('./models/dinosaurs.json'); // json
-//   const dinoData = JSON.parse(dinosaurs); // array
-//   const { name, type } = req.body; // destructuring // information that was submitted through the form
-//   // let name = req.body.name; => same syntax as destructuring
-//   // let type = req.body.type; => same syntax as destructuring
-
-//   const dino = dinoData[req.params.idx]; // object of the dino
-//   dino.name = name;
-//   dino.type = type;
-//   console.log(dinoData);
-//   fs.writeFileSync('./models/dinosaurs.json', JSON.stringify(dinoData));
-
-//   res.redirect('/dinosaurs');
-// });
-
-
-
-
-// app.put('/articles/:id', (req, res) => {
-//   console.log('Inside of Put /articles/:id');
-//   db.article.create({
-//     title: req.body.title,
-//     content: req.body.content,
-//     authorId: req.body.authorId
-// })
-
-// app.put('/articles/edit/:id', (req, res) => {
-//   db.article.update({
-//     where: { id: req.params.id },
-//     include: [db.author, db.comment]
-//   })
-//   .then((article) => {
-//     if (!article) throw Error()
-//     console.log('Inside of Put /articles/:id')
-//     res.redirect('articles', { articleId: article })
-//   })
-//   .catch((error) => {
-//     console.log(error)
-//     res.status(400).render('main/404')
-//   })
-// })
-
-// app.put('/articles/:id', (req, res) => {
-//   db.article.update({
-//     title: req.body.title,
-//     content: req.body.content,
-//     where: {id: req.body.articleId}
-//   })
-//   .then((post) => {
-//     res.redirect('/' + req.body.title)
-//   })
-//   .catch((error) => {
-//     res.status(400).render('main/404')
-//   })
-// })
-
-
-
+// ========================================================
+//             IMPORTS FROM CONTROLLERS
+// ========================================================
 // Imports all routes from the controllers file
 app.use('/faves', require('./controllers/faves'));
 app.use('/auth', require('./controllers/auth'));
@@ -251,7 +172,14 @@ app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 app.use('/comments', require('./controllers/comments'))
 
+// ========================================================
+//                     ROUTING FALLBACK 
+// ========================================================
+app.get("/*", (req, res) => res.render("404", { url: req.path }));
 
+// ========================================================
+//                         SERVER
+// ========================================================
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`🎧 You're listening to the smooth sounds of port ${PORT} 🎧`);

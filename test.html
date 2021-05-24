@@ -10,3 +10,61 @@
     
 </body>
 </html>
+
+
+// app.put('/dinosaurs/:idx', (req, res) => {
+    //   console.log('Inside of PUT /dinosaurs/:idx');
+    //   const dinosaurs = fs.readFileSync('./models/dinosaurs.json'); // json
+    //   const dinoData = JSON.parse(dinosaurs); // array
+    //   const { name, type } = req.body; // destructuring // information that was submitted through the form
+    //   // let name = req.body.name; => same syntax as destructuring
+    //   // let type = req.body.type; => same syntax as destructuring
+    
+    //   const dino = dinoData[req.params.idx]; // object of the dino
+    //   dino.name = name;
+    //   dino.type = type;
+    //   console.log(dinoData);
+    //   fs.writeFileSync('./models/dinosaurs.json', JSON.stringify(dinoData));
+    
+    //   res.redirect('/dinosaurs');
+    // });
+    
+    
+    
+    // app.put('/articles/:id', (req, res) => {
+    //   console.log('Inside of Put /articles/:id');
+    //   db.article.create({
+    //     title: req.body.title,
+    //     content: req.body.content,
+    //     authorId: req.body.authorId
+    // })
+    
+    // app.put('/articles/edit/:id', (req, res) => {
+    //   db.article.update({
+    //     where: { id: req.params.id },
+    //     include: [db.author, db.comment]
+    //   })
+    //   .then((article) => {
+    //     if (!article) throw Error()
+    //     console.log('Inside of Put /articles/:id')
+    //     res.redirect('articles', { articleId: article })
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //     res.status(400).render('main/404')
+    //   })
+    // })
+    
+    // app.put('/articles/:id', (req, res) => {
+    //   db.article.update({
+    //     title: req.body.title,
+    //     content: req.body.content,
+    //     where: {id: req.body.articleId}
+    //   })
+    //   .then((post) => {
+    //     res.redirect('/' + req.body.title)
+    //   })
+    //   .catch((error) => {
+    //     res.status(400).render('main/404')
+    //   })
+    // })
