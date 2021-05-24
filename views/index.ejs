@@ -19,9 +19,14 @@
           <a href="/articles/<%= a.id %>"><%= a.title %>
             <small>by <%= a.author.getFullName() %></small>
               <form method="POST" action="/articles/<%= a.id %>?_method=DELETE">
-                <button type="submit" value="Delete" class="btn btn-outline-danger" >
-                Remove Article
-                </button>
+                <div>
+                  <button type="submit" value="Delete" class="btn btn-outline-danger" >
+                  Remove Article
+                  </button>
+                  <button class="btn btn-outline-danger" >
+                    <a href="/articles/edit/<%= a.id %>">Edit</a>
+                  </button>
+                </div>
               </form>
           </H2>
           <p>

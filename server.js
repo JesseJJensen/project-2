@@ -60,10 +60,23 @@ app.get('/profile', isLoggedIn, (req, res) => {
   
 });
 
-// // GET / - display homepage
-// app.get('/', (req, res) => {
-//   res.render('index');
-// });
+
+
+app.get('/articles/edit/:id', (req, res) => {
+  db.article.findOne({
+    where: { id: req.params.id },
+    include: [db.author, db.comment]
+  })
+  .then((article) => {
+    if (!article) throw Error()
+    console.log(article.author)
+    res.render('articles/edit', { articleId: article })
+  })
+  .catch((error) => {
+    console.log(error)
+    res.status(400).render('main/404')
+  })
+})
 
 // GET / - display all articles and their authors
 app.get('/', (req, res) => {
@@ -125,13 +138,6 @@ app.post('/faves', isLoggedIn, function(req, res) {
 })
 
 
-app.delete('/articles/:id', (req, res) => {
-  db.article.destroy({
-    where: {id: req.params.id },
-  });
-  res.redirect("/");
-});
-
 //Delete fave from db
 app.delete("/remove/:id", (req, res) => {
   db.fave.destroy({
@@ -145,12 +151,12 @@ app.delete("/remove/:id", (req, res) => {
 //                   PUT and DELETE
 // ========================================================
 
-// app.delete('remove/:id', (req, res) => {
-//   db.article.destroy({
-//     where: {id: req.params.id },
-//   });
-//   res.redirect("/");
-// });
+app.delete('/articles/:id', (req, res) => {
+  db.article.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/");
+});
 
 // ========================================================
 //      PUT scenario - MVC - Model View Controller
@@ -190,6 +196,7 @@ app.delete("/remove/:id", (req, res) => {
 
 
 
+// app.put('/articles/')
 
 
 
