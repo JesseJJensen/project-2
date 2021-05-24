@@ -5,6 +5,8 @@
 </p>
 
 <p><%= article.content %></p>
+<a href="/articles/<%= article.id %>">Edit</a>
+
 
 <hr />
 
@@ -16,30 +18,6 @@
       <em>&lsquo;<%= c.content %>&rsquo;</em>
       &mdash;<%= c.name %>
     </p>
-
-    
-        <form class="col-sm-12" method="POST" action="/edit?_method=PUT">
-          <input type="hidden" name="articleId" value="<%=article.id%>">
-          <div class="row">
-            <div class="input-field col-sm-12">
-              <input placeholder="Your Name" id="name" name="name" type="text" class="form-control">
-              <label for="name">Your Name</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field  col-xs-12">
-              <textarea id="content" name="content" class="form-control"></textarea>
-              <label for="content">Your Thoughts</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <button class="btn btn-primary" type="submit">
-                edit
-              </button>
-            </div>
-          </div>
-        </form>
   <% }) %>
 <% } else { %>
   <p>Be the first to comment on this article</p>

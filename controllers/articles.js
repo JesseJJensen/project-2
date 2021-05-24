@@ -2,6 +2,7 @@ let express = require('express')
 let db = require('../models')
 let router = express.Router()
 
+
 // POST /articles - create a new post
 router.post('/', (req, res) => {
   db.article.create({
@@ -44,5 +45,26 @@ router.get('/:id', (req, res) => {
     res.status(400).render('main/404')
   })
 })
+
+router.put('edit/:idx', (req, res) => {
+  db.article.update({
+    title: req.body.title,
+    content: req.body.content,
+    authorId: req.body.authorId,
+    where: {id: req.body.articleId}
+  })
+  .then( updatedArticle => {
+    console.log(`-----successfully updated article-----`)
+    res.render('articles/show', { article: article })
+  })
+})
+
+//Delete fave from db
+router.delete("/remove/:id", (req, res) => {
+  db.article.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/");
+});
 
 module.exports = router

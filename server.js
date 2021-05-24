@@ -77,6 +77,7 @@ app.get('/', (req, res) => {
   })
 })
 
+
 // POST / - adds comments to article
 app.post('/comments', (req, res) => {
   db.comment
@@ -129,6 +130,15 @@ app.delete("/remove/:id", (req, res) => {
     where: {id: req.params.id },
   });
   res.redirect("/profile");
+});
+
+
+//Delete article from db
+app.delete("/delete/:id", (req, res) => {
+  db.article.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/articles");
 });
 
 // Edit a comment
