@@ -45,25 +45,18 @@ router.get('/:id', (req, res) => {
   })
 })
 
-router.put('/:id', (req, res) => {
+// ========================================================
+//                   PUT
+// ========================================================
+router.put('/edit/:id', (req, res) => {
   db.article.update({
-    title: req.body.update,
-    content: req.body.update,
-    //authorId: req.body.authorId,
-    where: {id: req.body.articleId}
-  })
+    title: req.body.title,
+    content: req.body.content,
+  },{ where: {id: req.params.id} })
   .then( updatedArticle => {
     console.log(`-----successfully updated article-----`)
     res.redirect('/')
   })
 })
-
-//Delete fave from db
-router.delete("/remove/:id", (req, res) => {
-  db.article.destroy({
-    where: {id: req.params.id },
-  });
-  res.redirect("/");
-});
 
 module.exports = router

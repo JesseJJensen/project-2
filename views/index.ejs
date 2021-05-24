@@ -2,22 +2,22 @@
     <div class="col-sm-8">
       <div class="row">
         <div class="col-xs-12">
-          <img class="hero" src="">
+          <img class="container" src="https://static.boredpanda.com/blog/wp-content/uploads/2016/04/funny-fake-book-covers-nyc-subway-prank-scott-rogowsky-8.jpg">
         </div>
       </div class="section-center">
       <h1>Book Summaries</h1>
 
-      <form method="GET" action="/articles">
+      <!-- <form method="GET" action="/articles">
         <label for="nameFilter">Search by Title</label>
         <input id="nameFilter" type="text" name="nameFilter">
         <input type="submit">
-      </form>
+      </form> -->
       <div>
         <% articles.forEach(a => { %>
         <div class="container">
           <H2>
-          <a href="/articles/<%= a.id %>"><%= a.title %>
-            <small>by <%= a.author.getFullName() %></small>
+          <a href="<%= a.id %>"><%= a.title %>
+            <small>Posted by: <%= a.author.getFullName() %></small>
               <form method="POST" action="/articles/<%= a.id %>?_method=DELETE">
 
 

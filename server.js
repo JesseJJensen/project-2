@@ -83,7 +83,8 @@ app.get('/articles/edit/:id', (req, res) => {
   })
   .then((article) => {
     if (!article) throw Error()
-    console.log(article.author)
+    console.log('here is ARTICLE!!!!!!!')
+    console.log(article)
     res.render('articles/edit', { articleId: article })
   })
   .catch((error) => {
@@ -126,10 +127,10 @@ app.post('/faves', isLoggedIn, function(req, res) {
 })
 
 // ========================================================
-//                   PUT and DELETE
+//                   DELETE
 // ========================================================
 
-// DELETE / Removes book from fave DB
+// DELETE / Removes book from faves model 
 app.delete("/remove/:id", (req, res) => {
   db.fave.destroy({
     where: {id: req.params.id },
@@ -137,6 +138,7 @@ app.delete("/remove/:id", (req, res) => {
   res.redirect("/profile");
 });
 
+// DELETE / Removes article from articles model
 app.delete('/articles/:id', (req, res) => {
   db.article.destroy({
     where: {id: req.params.id },

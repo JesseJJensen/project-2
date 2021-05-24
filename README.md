@@ -49,6 +49,49 @@ Key features for user:
 ![img2](./img/WireFrame.jpg)
 
 
-## Code
+## Coding Wins
 
+```javaScript
+// ========================================================
+//                   DELETE
+// ========================================================
+
+// DELETE / Removes book from faves model 
+app.delete("/remove/:id", (req, res) => {
+  db.fave.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/profile");
+});
+
+// DELETE / Removes article from articles model
+app.delete('/articles/:id', (req, res) => {
+  db.article.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/");
+});
 ```
+## Coding Losses
+```js
+// ========================================================
+//                   PUT
+// ========================================================
+router.put('/edit/:id', (req, res) => {
+  db.article.update({
+    title: req.body.title,
+    content: req.body.content,
+  },{ where: {id: req.params.id} })
+  .then( updatedArticle => {
+    console.log(`-----successfully updated article-----`)
+    res.redirect('/')
+  })
+})
+```
+## Images
+
+## Favorites
+![imgs1](./img/Screen1.png)
+## Search Results
+![imgS2](./img/screen2.png)
+
