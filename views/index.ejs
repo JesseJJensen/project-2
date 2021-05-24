@@ -6,20 +6,30 @@
         </div>
       </div>
       <h1>Latest Book Summaries</h1>
-  
-      <% articles.forEach((a, index) => { %>
+
+      <form method="GET" action="/articles">
+        <label for="nameFilter">Filter by Name</label>
+        <input id="nameFilter" type="text" name="nameFilter">
+        <input type="submit">
+      </form>
+      <div>
+        <% articles.forEach(a => { %>
         <div class="well">
-          <h2>
-            <a href="/articles/<%= a.id %>"><%= a.title %></a>
+          <H2>
+          <a href="/articles/<%= a.id %>"><%= a.title %>
             <small>by <%= a.author.getFullName() %></small>
-            <a href="/articles/<%= a.id %><%= index %>">Edit</a>
-            <form method="POST" action="/delete/<%= a.dataValues.idx %>?_method=DELETE"><button class="btn btn-outline-danger" >Remove Article</button></form>
-          </h2>
+              <form method="POST" action="/articles/<%= a.id %>?_method=DELETE">
+                <button type="submit" value="Delete" class="btn btn-outline-danger" >
+                Remove Article
+                </button>
+              </form>
+          </H2>
           <p>
             <strong><%= moment(a.createdAt).calendar() %></strong>
           </p>
         </div>
-      <% }) %>
+        <% }); %>
+      </div>
   
     </div>
     <div class="col-sm-4">

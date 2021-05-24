@@ -54,8 +54,8 @@ app.use((req, res, next) => {
 app.get('/profile', isLoggedIn, (req, res) => {
   const user = req.user.get()
   db.fave.findAll()
-  .then(favoriteBooks => {
-    res.render('profile', {favoriteBooks, user});
+  .then(faveBooks => {
+    res.render('profile', {faveBooks, user});
   })
   
 });
@@ -124,6 +124,14 @@ app.post('/faves', isLoggedIn, function(req, res) {
   })
 })
 
+
+app.delete('/articles/:id', (req, res) => {
+  db.article.destroy({
+    where: {id: req.params.id },
+  });
+  res.redirect("/");
+});
+
 //Delete fave from db
 app.delete("/remove/:id", (req, res) => {
   db.fave.destroy({
@@ -133,24 +141,57 @@ app.delete("/remove/:id", (req, res) => {
 });
 
 
-//Delete article from db
-app.delete("/delete/:id", (req, res) => {
-  db.article.destroy({
-    where: {id: req.params.id },
-  });
-  res.redirect("/articles");
-});
+// ========================================================
+//                   PUT and DELETE
+// ========================================================
 
-// Edit a comment
-app.put('/edit', (req,res) => {
-  db.comment.update(
-    {content: req.body.content},
-    {
-    where: {id: req.body.commentId}
-  })
-  .then(res.redirect(`articles/${req.body.articleId}`))
-  .catch(err => console.log(err));
-})
+// app.delete('remove/:id', (req, res) => {
+//   db.article.destroy({
+//     where: {id: req.params.id },
+//   });
+//   res.redirect("/");
+// });
+
+// ========================================================
+//      PUT scenario - MVC - Model View Controller
+// ========================================================
+/*
+2. Create a Edit view page (edit.ejs)
+3. Add html form that will be used editing a dino
+4. Inside of HTMl, to include ?_method=PUT in the action
+5. Create a /GET route that will go to the Edit page
+6. Place this route before any wildcard routes [example: /dinosaurs/edit/:idx before /dinosaurs/:idx]
+7. Create a PUT route (app.put('<action>', function)) to handle data submitted from the form
+8. Grab the data from the model, parse the data
+9. Use the index to find the position in the array of data
+10. Update the object's key/value pair that is submitted through req.body
+11. Convert that data (object or array) back to JSON
+12. Rewrite the file with the new data
+13. Render or redirect back to a page or route
+*/
+
+// app.put('/dinosaurs/:idx', (req, res) => {
+//   console.log('Inside of PUT /dinosaurs/:idx');
+//   const dinosaurs = fs.readFileSync('./models/dinosaurs.json'); // json
+//   const dinoData = JSON.parse(dinosaurs); // array
+//   const { name, type } = req.body; // destructuring // information that was submitted through the form
+//   // let name = req.body.name; => same syntax as destructuring
+//   // let type = req.body.type; => same syntax as destructuring
+
+//   const dino = dinoData[req.params.idx]; // object of the dino
+//   dino.name = name;
+//   dino.type = type;
+//   console.log(dinoData);
+//   fs.writeFileSync('./models/dinosaurs.json', JSON.stringify(dinoData));
+
+//   res.redirect('/dinosaurs');
+// });
+
+
+
+
+
+
 
 // Imports all routes from the controllers file
 app.use('/faves', require('./controllers/faves'));
