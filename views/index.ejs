@@ -4,29 +4,27 @@
         <div class="col-xs-12">
           <img class="hero" src="">
         </div>
-      </div>
-      <h1>Latest Book Summaries</h1>
+      </div class="section-center">
+      <h1>Book Summaries</h1>
 
       <form method="GET" action="/articles">
-        <label for="nameFilter">Filter by Name</label>
+        <label for="nameFilter">Search by Title</label>
         <input id="nameFilter" type="text" name="nameFilter">
         <input type="submit">
       </form>
       <div>
         <% articles.forEach(a => { %>
-        <div class="well">
+        <div class="container">
           <H2>
           <a href="/articles/<%= a.id %>"><%= a.title %>
             <small>by <%= a.author.getFullName() %></small>
               <form method="POST" action="/articles/<%= a.id %>?_method=DELETE">
-                <div>
-                  <button type="submit" value="Delete" class="btn btn-outline-danger" >
-                  Remove Article
-                  </button>
-                  <button class="btn btn-outline-danger" >
-                    <a href="/articles/edit/<%= a.id %>">Edit</a>
-                  </button>
-                </div>
+
+
+                  <button type="submit" value="Delete" class="btn " >Remove Article </button>
+                  <button class="btn" ><a href="/articles/edit/<%= a.id %>">Edit</a></button>
+
+    
               </form>
           </H2>
           <p>

@@ -62,21 +62,7 @@ app.get('/profile', isLoggedIn, (req, res) => {
 
 
 
-app.get('/articles/edit/:id', (req, res) => {
-  db.article.findOne({
-    where: { id: req.params.id },
-    include: [db.author, db.comment]
-  })
-  .then((article) => {
-    if (!article) throw Error()
-    console.log(article.author)
-    res.render('articles/edit', { articleId: article })
-  })
-  .catch((error) => {
-    console.log(error)
-    res.status(400).render('main/404')
-  })
-})
+
 
 // GET / - display all articles and their authors
 app.get('/', (req, res) => {
@@ -92,16 +78,38 @@ app.get('/', (req, res) => {
 
 
 // POST / - adds comments to article
-app.post('/comments', (req, res) => {
-  db.comment
-    .create({
-      content: req.body.content,
-      name: req.body.name,
-      articleId: req.body.articleId,
-    })
-    .then(res.redirect(`articles/${req.body.articleId}`))
-    .catch(err => console.log(err));
-});
+// app.post('/comments', (req, res) => {
+//   db.comment
+//     .create({
+//       content: req.body.content,
+//       name: req.body.name,
+//       articleId: req.body.articleId,
+//     })
+//     .then(res.redirect(`articles/${req.body.articleId}`))
+//     .catch(err => console.log(err));
+// });
+
+
+
+app.get('/articles/edit/:id', (req, res) => {
+  db.article.findOne({
+    where: { id: req.params.id },
+    
+  })
+  .then((article) => {
+    if (!article) throw Error()
+    console.log(article.author)
+    res.render('articles/edit', { articleId: article })
+  })
+  .catch((error) => {
+    console.log(error)
+    res.status(400).render('main/404')
+  })
+})
+
+
+
+
 
 
 // GET / Renders Search Page
@@ -196,7 +204,43 @@ app.delete('/articles/:id', (req, res) => {
 
 
 
-// app.put('/articles/')
+// app.put('/articles/:id', (req, res) => {
+//   console.log('Inside of Put /articles/:id');
+//   db.article.create({
+//     title: req.body.title,
+//     content: req.body.content,
+//     authorId: req.body.authorId
+// })
+
+// app.put('/articles/edit/:id', (req, res) => {
+//   db.article.update({
+//     where: { id: req.params.id },
+//     include: [db.author, db.comment]
+//   })
+//   .then((article) => {
+//     if (!article) throw Error()
+//     console.log('Inside of Put /articles/:id')
+//     res.redirect('articles', { articleId: article })
+//   })
+//   .catch((error) => {
+//     console.log(error)
+//     res.status(400).render('main/404')
+//   })
+// })
+
+// app.put('/articles/:id', (req, res) => {
+//   db.article.update({
+//     title: req.body.title,
+//     content: req.body.content,
+//     where: {id: req.body.articleId}
+//   })
+//   .then((post) => {
+//     res.redirect('/' + req.body.title)
+//   })
+//   .catch((error) => {
+//     res.status(400).render('main/404')
+//   })
+// })
 
 
 

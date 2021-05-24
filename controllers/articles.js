@@ -46,18 +46,19 @@ router.get('/:id', (req, res) => {
   })
 })
 
-router.put('edit/:idx', (req, res) => {
+router.put('/:id', (req, res) => {
   db.article.update({
-    title: req.body.title,
-    content: req.body.content,
-    authorId: req.body.authorId,
+    title: req.body.update,
+    content: req.body.update,
+    //authorId: req.body.authorId,
     where: {id: req.body.articleId}
   })
   .then( updatedArticle => {
     console.log(`-----successfully updated article-----`)
-    res.render('articles/show', { article: article })
+    res.redirect('/')
   })
 })
+
 
 //Delete fave from db
 router.delete("/remove/:id", (req, res) => {
