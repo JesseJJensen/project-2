@@ -6,7 +6,7 @@
         </div>
       </div class="section-center">
       <h1>Book Summaries</h1>
-
+      
       <!-- <form method="GET" action="/articles">
         <label for="nameFilter">Search by Title</label>
         <input id="nameFilter" type="text" name="nameFilter">
@@ -16,8 +16,8 @@
         <% articles.forEach(a => { %>
         <div class="container">
           <H2>
-          <a href="<%= a.id %>"><%= a.title %>
-            <small>Posted by: <%= a.author.getFullName() %></small>
+            <a href="/articles/<%= a.id %>"><%= a.title %>
+              <small>by <%= a.author.getFullName() %></small>
               <form method="POST" action="/articles/<%= a.id %>?_method=DELETE">
 
 
